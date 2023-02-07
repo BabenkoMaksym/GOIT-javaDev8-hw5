@@ -8,7 +8,7 @@ public class Database {
 
     private static Connection conn;
 
-    private static final String DB_URL = "jdbc:postgresql://localhost:5432/goit_java8_hw4";
+    private static final String DB_URL = "jdbc:postgresql://localhost:5432/goit_java8_hw5";
     private static final String DB_USER_NAME = "maksbbn";
     private static final String DB_USER_PASSWORD = "qwerty";
 
