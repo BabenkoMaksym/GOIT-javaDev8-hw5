@@ -1,0 +1,1 @@
+docker run --name goit_java8_hw4 -p 5432:5432 -e POSTGRES_USER=maksbbn -e POSTGRES_PASSWORD=qwerty -d postgres
