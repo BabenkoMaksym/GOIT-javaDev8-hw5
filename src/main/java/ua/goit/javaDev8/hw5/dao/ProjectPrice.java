@@ -1,8 +1,8 @@
 package ua.goit.javaDev8.hw5.dao;
 
 public class ProjectPrice {
-    Integer project_id;
-    Long projectCost;
+    private Integer project_id;
+    private Long projectCost;
 
     public Integer getProject_id() {
         return project_id;

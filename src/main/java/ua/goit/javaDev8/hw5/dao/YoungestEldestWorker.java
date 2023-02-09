@@ -3,10 +3,10 @@ package ua.goit.javaDev8.hw5.dao;
 import java.time.LocalDate;
 
 public class YoungestEldestWorker {
-    String type;
-    String firstName;
-    String lastName;
-    LocalDate birthday;
+    private String type;
+    private String firstName;
+    private String lastName;
+    private LocalDate birthday;
 
     public String getType() {
         return type;

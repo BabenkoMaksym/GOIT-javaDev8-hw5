@@ -1,8 +1,8 @@
 package ua.goit.javaDev8.hw5.dao;
 
 public class MaxProjectsClient {
-    String clientName;
-    Integer projectCount;
+    private String clientName;
+    private Integer projectCount;
 
     public String getClientName() {
         return clientName;

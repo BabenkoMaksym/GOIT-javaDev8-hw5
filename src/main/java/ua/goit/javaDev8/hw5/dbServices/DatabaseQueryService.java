@@ -15,7 +15,7 @@ public class DatabaseQueryService {
     private final String FIND_YOUNGEST_ELDEST_WORKERS_PATH = "sql/find_youngest_eldest_workers.sql";
     private final String PRINT_PROJECT_PRICES_PATH = "sql/print_project_prices.sql";
 
-    DatabaseServices dbServices = null;
+    private DatabaseServices dbServices = null;
 
     public List<LongestProject> findLongestProject() {
         List<LongestProject> longestProjects = new ArrayList<>();

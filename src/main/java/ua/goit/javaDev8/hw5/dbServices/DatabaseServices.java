@@ -12,10 +12,10 @@ import java.util.stream.Collectors;
 
 public class DatabaseServices {
 
-    Connection conn;
-    StringBuilder sql;
-    Statement st;
-    PreparedStatement pst;
+    private Connection conn;
+    private StringBuilder sql;
+    private Statement st;
+    private PreparedStatement pst;
 
     public DatabaseServices() {
         conn = Database.getConnection();

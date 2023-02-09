@@ -3,9 +3,9 @@ package ua.goit.javaDev8.hw5.dao;
 import java.time.LocalDate;
 
 public class Project {
-    public int projId;
-    public LocalDate startDate;
-    public LocalDate finishDate;
+    private int projId;
+    private LocalDate startDate;
+    private LocalDate finishDate;
 
     public Project(int projId, LocalDate startDate, LocalDate finishDate) {
         this.projId = projId;

@@ -3,12 +3,12 @@ package ua.goit.javaDev8.hw5.dao;
 import java.time.LocalDate;
 
 public class Worker {
-    Integer workerID;
-    String firstName;
-    String lastName;
-    LocalDate birthday;
-    String skillLevel;
-    Integer salary;
+    private Integer workerID;
+    private String firstName;
+    private String lastName;
+    private LocalDate birthday;
+    private String skillLevel;
+    private Integer salary;
 
     public Integer getWorkerID() {
         return workerID;

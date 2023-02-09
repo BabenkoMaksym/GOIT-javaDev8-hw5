@@ -1,8 +1,8 @@
 package ua.goit.javaDev8.hw5.dao;
 
 public class LongestProject {
-        Integer projectId;
-        Integer projCost;
+        private Integer projectId;
+        private Integer projCost;
 
         public Integer getProjectId() {
                 return projectId;
