@@ -3,18 +3,18 @@ package ua.goit.javaDev8.hw5.dao;
 import java.time.LocalDate;
 
 public class Project {
-    private int client_id;
+    private int clientId;
     private LocalDate startDate;
     private LocalDate finishDate;
 
-    public Project(int projId, LocalDate startDate, LocalDate finishDate) {
-        this.client_id = projId;
+    public Project(int clientId, LocalDate startDate, LocalDate finishDate) {
+        this.clientId = clientId;
         this.startDate = startDate;
         this.finishDate = finishDate;
     }
 
     public int getClient_id() {
-        return client_id;
+        return clientId;
     }
 
     public LocalDate getStartDate() {

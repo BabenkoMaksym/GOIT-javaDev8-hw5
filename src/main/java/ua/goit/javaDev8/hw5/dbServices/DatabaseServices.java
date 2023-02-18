@@ -81,7 +81,6 @@ public class DatabaseServices {
                 pst.setDate(3, Date.valueOf(worker.getBirthday()));
                 pst.setString(4, worker.getSkillLevel());
                 pst.setInt(5, worker.getSalary());
-                System.out.println(pst.toString());
                 pst.addBatch();
             }
             pst.executeBatch();
@@ -123,8 +122,7 @@ public class DatabaseServices {
                     pst.setInt(1, proj.getClient_id());
                     pst.setDate(2, Date.valueOf(proj.getStartDate()));
                     pst.setDate(3, Date.valueOf(proj.getFinishDate()));
-                    System.out.println(pst.toString());
-                    pst.executeQuery();
+                    pst.execute();
                 }
                 conn.commit();
             } catch (Exception ex) {
@@ -146,7 +144,7 @@ public class DatabaseServices {
                 for (List<Integer> projWork : projWorkerList) {
                     pst.setInt(1, projWork.get(0));
                     pst.setInt(2, projWork.get(1));
-                    pst.executeQuery();
+                    pst.execute();
                 }
                 conn.commit();
             } catch (Exception ex) {
