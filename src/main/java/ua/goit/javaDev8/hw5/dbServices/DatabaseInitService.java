@@ -8,6 +8,5 @@ public class DatabaseInitService {
     public static void main(String[] args) {
         DatabaseServices dbServices = new DatabaseServices();
         dbServices.initDB();
-        Database.closeConnection();
     }
 }

@@ -6,6 +6,5 @@ public class DatabasePopulateService {
     public static void main(String[] args) {
        DatabaseServices dbServices = new DatabaseServices();
        dbServices.populateDB();
-       Database.closeConnection();
     }
 }

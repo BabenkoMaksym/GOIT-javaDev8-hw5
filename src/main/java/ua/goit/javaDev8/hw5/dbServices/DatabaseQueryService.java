@@ -3,8 +3,11 @@ package ua.goit.javaDev8.hw5.dbServices;
 import ua.goit.javaDev8.hw5.Database;
 import ua.goit.javaDev8.hw5.dao.*;
 
+import java.io.FileNotFoundException;
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,44 +23,44 @@ public class DatabaseQueryService {
     public List<LongestProject> findLongestProject() {
         List<LongestProject> longestProjects = new ArrayList<>();
         dbServices = getDbServices();
-        ResultSet resultSet = dbServices.queryDB(FIND_LONGEST_PROJECT_PATH);
-        try {
+        try (Connection conn = Database.getConnection(); Statement st = conn.createStatement()) {
+            ResultSet resultSet = dbServices.queryDB(FIND_LONGEST_PROJECT_PATH, st);
             while (resultSet.next()) {
+                conn.close();
                 LongestProject lp = new LongestProject();
                 lp.setProjectId(resultSet.getInt("id"));
                 lp.setMonthCount(resultSet.getInt("month_count"));
                 longestProjects.add(lp);
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException | FileNotFoundException e) {
+            throw new RuntimeException(e);
         }
-        Database.closeConnection();
         return longestProjects;
     }
 
     public List<MaxProjectsClient> findMaxProjectsClient() {
         List<MaxProjectsClient> maxProjectsClients = new ArrayList<>();
         dbServices = getDbServices();
-        ResultSet resultSet = dbServices.queryDB(FIND_MAX_PROJECTS_CLIENT_PATH);
-        try {
+
+        try (Connection conn = Database.getConnection(); Statement st = conn.createStatement()) {
+            ResultSet resultSet = dbServices.queryDB(FIND_MAX_PROJECTS_CLIENT_PATH, st);
             while (resultSet.next()) {
                 MaxProjectsClient mpc = new MaxProjectsClient();
                 mpc.setClientName(resultSet.getString("name"));
                 mpc.setProjectCount(resultSet.getInt("project_count"));
                 maxProjectsClients.add(mpc);
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException | FileNotFoundException e) {
+            throw new RuntimeException(e);
         }
-        Database.closeConnection();
         return maxProjectsClients;
     }
 
     public List<Worker> findMaxSalaryWorker() {
         List<Worker> workers = new ArrayList<>();
         dbServices = getDbServices();
-        ResultSet resultSet = dbServices.queryDB(FIND_MAX_SALARY_WORKER_PATH);
-        try {
+        try (Connection conn = Database.getConnection(); Statement st = conn.createStatement()) {
+            ResultSet resultSet = dbServices.queryDB(FIND_MAX_SALARY_WORKER_PATH, st);
             while (resultSet.next()) {
                 Worker worker = new Worker();
                 worker.setWorkerID(resultSet.getInt("id"));
@@ -68,18 +71,17 @@ public class DatabaseQueryService {
                 worker.setSalary(resultSet.getInt("salary"));
                 workers.add(worker);
             }
-        } catch (SQLException e) {
+        } catch (SQLException | FileNotFoundException e) {
             e.printStackTrace();
         }
-        Database.closeConnection();
         return workers;
     }
 
     public List<YoungestEldestWorker> findYoungestEldestWorkers() {
         List<YoungestEldestWorker> youngestEldestWorkerList = new ArrayList<>();
         dbServices = getDbServices();
-        ResultSet resultSet = dbServices.queryDB(FIND_YOUNGEST_ELDEST_WORKERS_PATH);
-        try {
+        try (Connection conn = Database.getConnection(); Statement st = conn.createStatement()) {
+            ResultSet resultSet = dbServices.queryDB(FIND_YOUNGEST_ELDEST_WORKERS_PATH, st);
             while (resultSet.next()) {
                 YoungestEldestWorker yew = new YoungestEldestWorker();
                 yew.setType(resultSet.getString("type"));
@@ -88,28 +90,26 @@ public class DatabaseQueryService {
                 yew.setBirthday(resultSet.getDate("birthday").toLocalDate());
                 youngestEldestWorkerList.add(yew);
             }
-        } catch (SQLException e) {
+        } catch (SQLException | FileNotFoundException e) {
             e.printStackTrace();
         }
-        Database.closeConnection();
         return youngestEldestWorkerList;
     }
 
     public List<ProjectPrice> findProjectPrices() {
         List<ProjectPrice> projectPriceList = new ArrayList<>();
         dbServices = getDbServices();
-        ResultSet resultSet = dbServices.queryDB(PRINT_PROJECT_PRICES_PATH);
-        try {
+        try (Connection conn = Database.getConnection(); Statement st = conn.createStatement()) {
+            ResultSet resultSet = dbServices.queryDB(PRINT_PROJECT_PRICES_PATH, st);
             while (resultSet.next()) {
                 ProjectPrice projectPrice = new ProjectPrice();
                 projectPrice.setProject_id(resultSet.getInt("project_id"));
                 projectPrice.setProjectCost(resultSet.getLong("proj_cost"));
                 projectPriceList.add(projectPrice);
             }
-        } catch (SQLException e) {
+        } catch (SQLException | FileNotFoundException e) {
             e.printStackTrace();
         }
-        Database.closeConnection();
         return projectPriceList;
     }
 

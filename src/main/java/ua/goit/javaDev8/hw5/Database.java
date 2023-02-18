@@ -12,8 +12,8 @@ public class Database {
     private static final String DB_USER_NAME = "maksbbn";
     private static final String DB_USER_PASSWORD = "qwerty";
 
-    public static Connection getConnection() {
-        if (conn == null) {
+    public static Connection getConnection() throws SQLException {
+        if (conn == null || conn.isClosed()) {
             try {
                 conn = DriverManager.getConnection(DB_URL, DB_USER_NAME, DB_USER_PASSWORD);
             } catch (SQLException e) {
@@ -21,14 +21,5 @@ public class Database {
             }
         }
         return conn;
-    }
-
-    public static void closeConnection() {
-        try {
-            conn.close();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        conn = null;
     }
 }

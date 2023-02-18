@@ -6,21 +6,18 @@ import ua.goit.javaDev8.hw5.dao.Worker;
 
 import java.io.*;
 import java.sql.*;
+import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class DatabaseServices {
 
-    private Connection conn;
-    private StringBuilder sql;
-    private Statement st;
-    private PreparedStatement pst;
+    private final StringBuilder sql;
 
     public DatabaseServices() {
-        conn = Database.getConnection();
         sql = new StringBuilder();
-        st = null;
     }
 
     public void initDB() {
@@ -34,8 +31,7 @@ public class DatabaseServices {
     }
 
     public void initDB(String filePath) {
-        try {
-            st = conn.createStatement();
+        try (Connection conn = Database.getConnection(); Statement st = conn.createStatement()) {
             BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(filePath)));
             while (true) {
                 String s = reader.readLine();
@@ -57,8 +53,7 @@ public class DatabaseServices {
     }
 
     public void populateDB(String filePath) {
-        try {
-            st = conn.createStatement();
+        try (Connection conn = Database.getConnection(); Statement st = conn.createStatement()) {
             BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(filePath)));
             while (true) {
                 String s = reader.readLine();
@@ -77,31 +72,16 @@ public class DatabaseServices {
         }
     }
 
-    public ResultSet queryDB(String sqlStrPath) {
-        ResultSet resultSet = null;
-        try {
-            st = conn.createStatement();
-            BufferedReader reader = new BufferedReader(new FileReader(new File(sqlStrPath)));
-            String sqlStr = reader.lines().collect(Collectors.joining(System.lineSeparator()));
-            resultSet = st.executeQuery(sqlStr);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return resultSet;
-    }
-
     public void populateDBTableWorker(List<Worker> workers) {
-        String sql ="INSERT INTO public.worker (first_name, last_name, birthday, level, salary) VALUES (?, ?, ?, ?, ?)";
-        try {
-            pst = conn.prepareStatement(sql);
+        String sql = "INSERT INTO public.worker (first_name, last_name, birthday, level, salary) VALUES (?, ?, ?, ?, ?)";
+        try (Connection conn = Database.getConnection(); PreparedStatement pst = conn.prepareStatement(sql)) {
             for (Worker worker : workers) {
                 pst.setString(1, worker.getFirstName());
                 pst.setString(2, worker.getLastName());
                 pst.setDate(3, Date.valueOf(worker.getBirthday()));
                 pst.setString(4, worker.getSkillLevel());
                 pst.setInt(5, worker.getSalary());
+                System.out.println(pst.toString());
                 pst.addBatch();
             }
             pst.executeBatch();
@@ -110,17 +90,19 @@ public class DatabaseServices {
         }
     }
 
-    public void populateDBTableClient (List<String> clientNames) {
-        String sql = "INSERT into public.client (client_name) values (?)";
-        try {
-            pst = conn.prepareStatement(sql);
+    public void populateDBTableClient(List<String> clientNames) {
+        String sql = "INSERT INTO public.client (client_name) VALUES (?)";
+        try (Connection conn = Database.getConnection()) {
+            PreparedStatement pst = conn.prepareStatement(sql);
             conn.setAutoCommit(false);
             try {
                 for (String name : clientNames) {
                     pst.setString(1, name);
-                    pst.executeBatch();
+                    pst.addBatch();
                 }
-            }  catch(Exception ex) {
+                pst.executeBatch();
+                conn.commit();
+            } catch (Exception ex) {
                 conn.rollback();
             } finally {
                 conn.setAutoCommit(true);
@@ -130,20 +112,22 @@ public class DatabaseServices {
         }
     }
 
-    public void populateDBTableProject (List<Project> projects) {
-        String sql = "insert into public.project (client_id, start_date, finish_date) values (?, ?, ?)";
+    public void populateDBTableProject(List<Project> projects) {
+        String sql = "INSERT INTO public.project (client_id, start_date, finish_date) VALUES (?, ?, ?)";
 
-        try {
-            pst = conn.prepareStatement(sql);
+        try (Connection conn = Database.getConnection()) {
+            PreparedStatement pst = conn.prepareStatement(sql);
             conn.setAutoCommit(false);
             try {
                 for (Project proj : projects) {
-                    pst.setInt(1, proj.getProjId());
+                    pst.setInt(1, proj.getClient_id());
                     pst.setDate(2, Date.valueOf(proj.getStartDate()));
-                    pst.setDate(2, Date.valueOf(proj.getFinishDate()));
-                    pst.executeBatch();
+                    pst.setDate(3, Date.valueOf(proj.getFinishDate()));
+                    System.out.println(pst.toString());
+                    pst.executeQuery();
                 }
-            }  catch(Exception ex) {
+                conn.commit();
+            } catch (Exception ex) {
                 conn.rollback();
             } finally {
                 conn.setAutoCommit(true);
@@ -154,18 +138,18 @@ public class DatabaseServices {
     }
 
     public void populateDBTableProjectWorker(List<List<Integer>> projWorkerList) {
-        String sql = "insert into public.project_worker (project_id, worker_id) values (?, ?);";
-        try {
-            pst = conn.prepareStatement(sql);
+        String sql = "INSERT INTO public.project_worker (project_id, worker_id) VALUES (?, ?);";
+        try (Connection conn = Database.getConnection()) {
+            PreparedStatement pst = conn.prepareStatement(sql);
             conn.setAutoCommit(false);
             try {
-                for (List<Integer> projWork: projWorkerList) {
+                for (List<Integer> projWork : projWorkerList) {
                     pst.setInt(1, projWork.get(0));
                     pst.setInt(2, projWork.get(1));
-
-                    pst.executeBatch();
+                    pst.executeQuery();
                 }
-            }  catch(Exception ex) {
+                conn.commit();
+            } catch (Exception ex) {
                 conn.rollback();
             } finally {
                 conn.setAutoCommit(true);
@@ -174,5 +158,14 @@ public class DatabaseServices {
             throw new RuntimeException(e);
         }
 
+    }
+
+    public ResultSet queryDB(String sqlStrPath, Statement st) throws SQLException, FileNotFoundException {
+
+        BufferedReader reader = new BufferedReader(new FileReader(new File(sqlStrPath)));
+        String sqlStr = reader.lines().collect(Collectors.joining(System.lineSeparator()));
+        ResultSet resultSet = st.executeQuery(sqlStr);
+
+        return resultSet;
     }
 }
